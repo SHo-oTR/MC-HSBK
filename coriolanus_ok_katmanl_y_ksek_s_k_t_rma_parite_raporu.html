@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coriolanus Çok Katmanlı Yüksek Sıkıştırma Parite Raporu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Utilitarian · Technical Benchmark Brief · Answer-first split hero · Space Grotesk + Inter + JetBrains Mono · Crisp White (#FFFFFF) + Cobalt (#2563EB) & Emerald (#059669) · 0px radius · 102.4x hero numeral · 1px hairline splits · SVG line + horizontal bar charts */
+    :root {
+      --paper: #FFFFFF;
+      --ink: #0F172A;
+      --ink2: #334155;
+      --mute: #475569;
+      --hair: #CBD5E1;
+      --accent: #2563EB;
+      --accent-text: #1E40AF;
+      --accent-2: #059669;
+      --accent-2-text: #065F46;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    main {
+      padding: 68px clamp(24px, 10.4vw, 112px) 92px;
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: 24px;
+    }
+    .full { grid-column: 1 / -1; }
+    .measure { max-width: 68ch; }
+    .hero-grid {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: 24px;
+      align-items: end;
+      padding-bottom: 36px;
+      border-bottom: 1px solid var(--hair);
+    }
+    .hero-copy { grid-column: 1 / 9; }
+    .hero-stat { grid-column: 9 / 13; text-align: right; }
+    .hero-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(56px, 7vw, 72px);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      color: var(--accent-text);
+    }
+    .hero-num-cap {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--mute);
+    }
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(36px, 4.4vw, 52px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      margin: 0 0 16px;
+      text-wrap: balance;
+      color: var(--ink);
+    }
+    .deck {
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--ink2);
+      margin: 0;
+      max-width: 64ch;
+    }
+    .sec {
+      grid-column: 1 / -1;
+      margin-top: 64px;
+    }
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(24px, 2.6vw, 32px);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin: 0 0 18px;
+      color: var(--ink);
+    }
+    p {
+      margin: 0 0 16px;
+      color: var(--ink2);
+    }
+    .strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 24px;
+      padding: 24px 0;
+      border-top: 1px solid var(--hair);
+      border-bottom: 1px solid var(--hair);
+      margin-top: 24px;
+    }
+    .strip-item-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .strip-item-lbl {
+      font-size: 13px;
+      color: var(--mute);
+      margin-top: 4px;
+    }
+    .split {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--hair);
+    }
+    .split-left { grid-column: 1 / 5; }
+    .split-right { grid-column: 5 / 13; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 15px;
+    }
+    th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      text-align: left;
+      color: var(--mute);
+      padding: 12px 10px;
+      border-bottom: 2px solid var(--ink);
+      white-space: nowrap;
+    }
+    td {
+      padding: 13px 10px;
+      border-bottom: 1px solid var(--hair);
+      color: var(--ink2);
+      vertical-align: top;
+    }
+    td.num, th.num {
+      text-align: right;
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+    }
+    td.strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+    td.accent {
+      font-weight: 600;
+      color: var(--accent-2-text);
+    }
+    figure {
+      margin: 28px 0 0;
+      padding: 0;
+    }
+    .fig-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+    figcaption {
+      font-size: 13px;
+      color: var(--mute);
+      margin-top: 8px;
+    }
+    .samples-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px 32px;
+      margin-top: 20px;
+    }
+    .sample-entry {
+      padding-top: 16px;
+      border-top: 1px solid var(--hair);
+    }
+    .sample-head {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .sample-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent-text);
+      margin-bottom: 10px;
+    }
+    blockquote.sample-text {
+      margin: 0;
+      padding: 0 0 0 14px;
+      border-left: 2px solid var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--ink2);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .pull-quote {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(22px, 2.5vw, 28px);
+      line-height: 1.35;
+      color: var(--ink);
+      border-left: 3px solid var(--accent);
+      padding-left: 24px;
+      margin: 24px 0 0;
+      max-width: 54ch;
+    }
+    ol.sources {
+      padding-left: 20px;
+      margin: 12px 0 0;
+      color: var(--ink2);
+    }
+    ol.sources li { margin-bottom: 8px; }
+    a { color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; }
+    @media (max-width: 860px) {
+      .hero-copy, .hero-stat, .split-left, .split-right { grid-column: 1 / -1; text-align: left; }
+      .hero-stat { margin-top: 20px; }
+      .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .samples-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero-grid">
+      <div class="hero-copy">
+        <h1>MC-HSBK, 4 katmanda 102.4x sıkıştırmaya rağmen Dense FP32 paritesini koruyor</h1>
+        <p class="deck">
+          Coriolanus metni üzerinde eğitilen 4 katmanlı (8 projeksiyon, N=512) Dense FP32 öğretmen modeline karşı 12.8x ile 102.4x arasındaki dört yüksek sıkıştırmalı MC-HSBK FP32 seçeneğinin parite doğruluğu, doğrulama kaybı ve metin üretimi karşılaştırması.
+        </p>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-num">102.4x</div>
+        <div class="hero-num-cap">8.192 KB → 80 KB (Top-1 Parite %87.30)</div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="strip">
+        <div>
+          <div class="strip-item-val">4 Katman / 8 Matris</div>
+          <div class="strip-item-lbl">RMSNorm + Residual yapı (N=512, m=32)</div>
+        </div>
+        <div>
+          <div class="strip-item-val">%89.94 / %99.80</div>
+          <div class="strip-item-lbl">12.8x'te Top-1 ve Top-5 parite</div>
+        </div>
+        <div>
+          <div class="strip-item-val">%87.30 / %99.80</div>
+          <div class="strip-item-lbl">102.4x'te Top-1 ve Top-5 parite</div>
+        </div>
+        <div>
+          <div class="strip-item-val">0.0151 – 0.0292</div>
+          <div class="strip-item-lbl">Damıtma sonrası Val KL aralığı</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <h2>Dört yüksek sıkıştırma seçeneğinde parite ve doğrulama sonuçları</h2>
+      <p class="measure">
+        Dense FP32 öğretmen modeli 320 adımda eğitilerek ayrılmış 1.024 doğrulama tokeni üzerinde 2.7832 kayıp ve %22.36 Top-1 doğruluğa ulaştı. Ardından 8 matrisin tamamı Van Loan–Pitsianis Sarmal-Kronecker SVD ile başlatılıp 180 adım çok-katmanlı Logit KL-Damıtmasından geçirildi. En agresif 102.4x sıkıştırma bile öğretmenin Top-5 tahminlerini %99.80 oranında yakaladı ve doğrulama doğruluğunda Dense öğretmeni (%22.95 vs %22.36) geride bıraktı.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Model / Seçenek</th>
+            <th class="num">Sıkıştırma</th>
+            <th class="num">Matris Parametresi</th>
+            <th class="num">Boyut (KB)</th>
+            <th class="num">SVD Top-1</th>
+            <th class="num">Damıtma Top-1</th>
+            <th class="num">Damıtma Top-5</th>
+            <th class="num">Val KL</th>
+            <th class="num">Val Loss</th>
+            <th class="num">Val Acc</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="strong">Dense FP32 (Öğretmen)</td>
+            <td class="num">1.00x</td>
+            <td class="num">2.097.152</td>
+            <td class="num">8.192,0 KB</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.0000</td>
+            <td class="num">2.7832</td>
+            <td class="num">%22.36</td>
+          </tr>
+          <tr>
+            <td class="strong">MC-HSBK (R=16)</td>
+            <td class="num">12.80x</td>
+            <td class="num">163.840</td>
+            <td class="num">640,0 KB</td>
+            <td class="num">%41.80</td>
+            <td class="num accent">%89.94</td>
+            <td class="num">%99.80</td>
+            <td class="num">0.0151</td>
+            <td class="num">2.7825</td>
+            <td class="num">%22.36</td>
+          </tr>
+          <tr>
+            <td class="strong">MC-HSBK (R=8)</td>
+            <td class="num">25.60x</td>
+            <td class="num">81.920</td>
+            <td class="num">320,0 KB</td>
+            <td class="num">%36.91</td>
+            <td class="num accent">%89.36</td>
+            <td class="num">%99.90</td>
+            <td class="num">0.0186</td>
+            <td class="num">2.7936</td>
+            <td class="num">%23.05</td>
+          </tr>
+          <tr>
+            <td class="strong">MC-HSBK (R=4)</td>
+            <td class="num">51.20x</td>
+            <td class="num">40.960</td>
+            <td class="num">160,0 KB</td>
+            <td class="num">%24.22</td>
+            <td class="num accent">%89.26</td>
+            <td class="num">%99.71</td>
+            <td class="num">0.0212</td>
+            <td class="num">2.8015</td>
+            <td class="num">%23.05</td>
+          </tr>
+          <tr>
+            <td class="strong">MC-HSBK (R=2)</td>
+            <td class="num">102.40x</td>
+            <td class="num">20.480</td>
+            <td class="num">80,0 KB</td>
+            <td class="num">%14.94</td>
+            <td class="num accent">%87.30</td>
+            <td class="num">%99.80</td>
+            <td class="num">0.0292</td>
+            <td class="num">2.8059</td>
+            <td class="num">%22.95</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <figure>
+        <div class="fig-title">Logit KL-damıtması 102.4x sıkıştırmada bile Top-1 pariteyi %14.9'dan %87.3'e taşıyor</div>
+        <svg viewBox="0 0 680 390" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <line x1="80" y1="60" x2="620" y2="60" stroke="#CBD5E1" stroke-width="1"/>
+          <line x1="80" y1="120" x2="620" y2="120" stroke="#CBD5E1" stroke-width="1"/>
+          <line x1="80" y1="180" x2="620" y2="180" stroke="#CBD5E1" stroke-width="1"/>
+          <line x1="80" y1="240" x2="620" y2="240" stroke="#CBD5E1" stroke-width="1"/>
+          <line x1="80" y1="300" x2="620" y2="300" stroke="#0F172A" stroke-width="1.5"/>
+          <line x1="80" y1="50" x2="80" y2="300" stroke="#0F172A" stroke-width="1.5"/>
+
+          <text x="68" y="65" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#475569">100%</text>
+          <text x="68" y="125" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#475569">75%</text>
+          <text x="68" y="185" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#475569">50%</text>
+          <text x="68" y="245" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#475569">25%</text>
+          <text x="68" y="305" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#475569">0%</text>
+
+          <text x="145" y="328" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#0F172A">12.8x (R=16)</text>
+          <text x="285" y="328" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#0F172A">25.6x (R=8)</text>
+          <text x="425" y="328" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#0F172A">51.2x (R=4)</text>
+          <text x="565" y="328" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#0F172A">102.4x (R=2)</text>
+
+          <circle cx="150" cy="24" r="5" fill="#059669"/>
+          <text x="162" y="29" font-family="Inter, sans-serif" font-size="13" fill="#0F172A">KL-Damıtma Sonrası (180 Adım)</text>
+          <circle cx="390" cy="24" r="5" fill="#2563EB"/>
+          <text x="402" y="29" font-family="Inter, sans-serif" font-size="13" fill="#0F172A">SVD Başlatma (Adım 0)</text>
+
+          <!-- SVD: 41.80 -> y=199.68, 36.91 -> y=211.42, 24.22 -> y=241.87, 14.94 -> y=264.14 -->
+          <polyline fill="none" stroke="#2563EB" stroke-width="2.5" points="145,200 285,211 425,242 565,264"/>
+          <circle cx="145" cy="200" r="5" fill="#2563EB"/>
+          <circle cx="285" cy="211" r="5" fill="#2563EB"/>
+          <circle cx="425" cy="242" r="5" fill="#2563EB"/>
+          <circle cx="565" cy="264" r="5" fill="#2563EB"/>
+
+          <text x="145" y="186" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#1E40AF">%41.8</text>
+          <text x="285" y="197" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#1E40AF">%36.9</text>
+          <text x="425" y="228" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#1E40AF">%24.2</text>
+          <text x="565" y="250" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" fill="#1E40AF">%14.9</text>
+
+          <!-- Damıtma: 89.94 -> y=84.14, 89.36 -> y=85.54, 89.26 -> y=85.78, 87.30 -> y=90.48 -->
+          <polyline fill="none" stroke="#059669" stroke-width="3" points="145,84 285,86 425,86 565,90"/>
+          <circle cx="145" cy="84" r="5.5" fill="#059669"/>
+          <circle cx="285" cy="86" r="5.5" fill="#059669"/>
+          <circle cx="425" cy="86" r="5.5" fill="#059669"/>
+          <circle cx="565" cy="90" r="5.5" fill="#059669"/>
+
+          <text x="145" y="72" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#065F46">%89.9</text>
+          <text x="285" y="74" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#065F46">%89.4</text>
+          <text x="425" y="74" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#065F46">%89.3</text>
+          <text x="565" y="78" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#065F46">%87.3</text>
+
+          <text x="350" y="366" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" fill="#475569">Yapısal sıkıştırma oranı (4 katman, 8 projeksiyon)</text>
+        </svg>
+        <figcaption>Birim: Top-1 parite yüzdesi (%). Kaynak: Coriolanus held-out 1.024 doğrulama tokeni üzerinde ölçüm.</figcaption>
+      </figure>
+    </section>
+
+    <section class="sec">
+      <div class="split">
+        <div class="split-left">
+          <h2>Bellek ayak izi 8.192 KB'tan 80 KB'a düşüyor</h2>
+          <p>
+            Yüksek sıkıştırmalı seçeneklerde her yeni dal katman başına yalnızca 10.240 parametre (8 matris toplamı) ekler. R=2 seçeneği, Dense FP32 modelinin yalnızca %0.98'i kadar bellek kullanırken aynı doğrulama doğruluğunu korur.
+          </p>
+        </div>
+        <div class="split-right">
+          <figure style="margin-top: 0;">
+            <div class="fig-title">MC-HSBK seçenekleri Dense FP32'ye kıyasla ağırlık belleğini %92 ila %99 azaltıyor</div>
+            <svg viewBox="0 0 680 310" width="100%" xmlns="http://www.w3.org/2000/svg">
+              <text x="150" y="56" text-anchor="end" font-family="Inter, sans-serif" font-size="14" fill="#0F172A">Dense FP32 (1.0x)</text>
+              <rect x="165" y="36" width="380" height="28" fill="#475569" rx="3"/>
+              <text x="557" y="56" font-family="JetBrains Mono, monospace" font-size="14" fill="#0F172A">8.192 KB</text>
+
+              <text x="150" y="112" text-anchor="end" font-family="Inter, sans-serif" font-size="14" fill="#0F172A">MC-HSBK 12.8x</text>
+              <rect x="165" y="92" width="30" height="28" fill="#2563EB" rx="3"/>
+              <text x="207" y="112" font-family="JetBrains Mono, monospace" font-size="14" fill="#1E40AF">640 KB</text>
+
+              <text x="150" y="168" text-anchor="end" font-family="Inter, sans-serif" font-size="14" fill="#0F172A">MC-HSBK 25.6x</text>
+              <rect x="165" y="148" width="15" height="28" fill="#2563EB" rx="3"/>
+              <text x="192" y="168" font-family="JetBrains Mono, monospace" font-size="14" fill="#1E40AF">320 KB</text>
+
+              <text x="150" y="224" text-anchor="end" font-family="Inter, sans-serif" font-size="14" fill="#0F172A">MC-HSBK 51.2x</text>
+              <rect x="165" y="204" width="8" height="28" fill="#059669" rx="2"/>
+              <text x="185" y="224" font-family="JetBrains Mono, monospace" font-size="14" fill="#065F46">160 KB</text>
+
+              <text x="150" y="280" text-anchor="end" font-family="Inter, sans-serif" font-size="14" fill="#0F172A">MC-HSBK 102.4x</text>
+              <rect x="165" y="260" width="4" height="28" fill="#059669" rx="2"/>
+              <text x="181" y="280" font-family="JetBrains Mono, monospace" font-size="14" fill="#065F46">80 KB</text>
+            </svg>
+            <figcaption>Birim: Kilobayt (KB, FP32 depolama). Kaynak: 4 katmanlı (8 projeksiyon) model ağırlık toplamları.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <h2>Çok katmanlı modellerden metin çıkarımı karşılaştırması</h2>
+      <p class="measure">
+        Tüm modellere aynı başlangıç istemi ("FIRST CITIZEN\nBefore we proceed") ve aynı örnekleme ayarları (temperature=0.65, top-k=5, 140 yeni karakter) verilerek otoregresif metin çıkarımı yapıldı. Sıkıştırma 102.4x'e çıktığında bile karakter düzeyindeki İngilizce hece ve boşluk dağılımı Dense öğretmenle tutarlılığını korudu.
+      </p>
+
+      <div class="samples-grid">
+        <div class="sample-entry">
+          <div class="sample-head">Dense FP32 Öğretmen (1.00x)</div>
+          <div class="sample-meta">8.192 KB · Val Loss 2.7832 · Val Acc %22.36</div>
+          <blockquote class="sample-text">FIRST CITIZEN
+Before we proceed ra ararrsser at arast cerrararsas ese nt harat han sth aart are chtas thae rartr asre thea tan ctro rhare an tasre rre era re resra tan atr</blockquote>
+        </div>
+
+        <div class="sample-entry">
+          <div class="sample-head">MC-HSBK FP32 (12.80x · R=16)</div>
+          <div class="sample-meta">640 KB · Top-1 Parite %89.94 · KL 0.0151</div>
+          <blockquote class="sample-text">FIRST CITIZEN
+Before we proceed ranr er thear arraran n ttara acsre hatr tar erars caasrt at htanrr eas asrarrat trar th thhaa st tha han tath ran ast rartase sth he arre</blockquote>
+        </div>
+
+        <div class="sample-entry">
+          <div class="sample-head">MC-HSBK FP32 (25.60x · R=8)</div>
+          <div class="sample-meta">320 KB · Top-1 Parite %89.36 · KL 0.0186</div>
+          <blockquote class="sample-text">FIRST CITIZEN
+Before we proceed ra arnrasssrar ar anannnrs arstse hes harar act anr thhas atr er asatrr acarr cerearrse th aas ntto hhe thar are sartran at re her thas ata</blockquote>
+        </div>
+
+        <div class="sample-entry">
+          <div class="sample-head">MC-HSBK FP32 (51.20x · R=4)</div>
+          <div class="sample-meta">160 KB · Top-1 Parite %89.26 · KL 0.0212</div>
+          <blockquote class="sample-text">FIRST CITIZEN
+Before we proceed rans sarrerra tar assrtra at an hatte anrr arerr etsars er atrreare ars tth aasnran ret rrat hasass at thh harat raras stan hreas the rat a</blockquote>
+        </div>
+
+        <div class="sample-entry">
+          <div class="sample-head">MC-HSBK FP32 (102.40x · R=2)</div>
+          <div class="sample-meta">80 KB · Top-1 Parite %87.30 · KL 0.0292</div>
+          <blockquote class="sample-text">FIRST CITIZEN
+Before we proceed ratr erarsre rar at rannre arsant rearss arranr asrrtea ar ratannrt thh ath ah taatr hhers aas srcraatr harsar sacrast rart ahes ata rth ha</blockquote>
+        </div>
+      </div>
+
+      <p class="pull-quote">
+        Yüksek sıkıştırmada (51.2x–102.4x) tek başına SVD başlatması paritenin %15–%24'ünü yakalayabilirken, kısa bir KL-damıtması sarmal halka kaydırmalı Kronecker dallarını hizalayarak pariteyi %87–%89 bandına geri taşır.
+      </p>
+    </section>
+
+    <section class="sec">
+      <h2>Kaynaklar</h2>
+      <ol class="sources">
+        <li><a href="https://shakespeare.folger.edu/shakespeares-works/coriolanus/" target="_blank" rel="noopener noreferrer">Folger Shakespeare Library — Coriolanus Tam Metin Veri Seti</a></li>
+      </ol>
+    </section>
+  </main>
+</body>
+</html>
